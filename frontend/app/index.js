@@ -1,9 +1,10 @@
 'use strict';
 var angular = require('angular');
 require('./layout.css');
-require(__dirname + '/services/http-service.js')(app)
 
 var app = angular.module('myApp', []);
+
+require('./services/http_service.js')(app)
 
 app.controller('ContinentCtrl',['$http','ResourceService', function($http, ResourceService){
   var self = this;
@@ -35,7 +36,7 @@ app.controller('ContinentCtrl',['$http','ResourceService', function($http, Resou
   };
 
   this.getContinents = function(){
-    $http.get(mainRoute)
+    continentResource.getContinents()
     .then((result)=>{
       console.log('Here is result ' + result);
       this.continentsList = result.data;
@@ -47,7 +48,7 @@ app.controller('ContinentCtrl',['$http','ResourceService', function($http, Resou
   }
   this.getByIdContinents = function(){
       this.buttonShow = true;
-      $http.get(mainRoute + '/'+ this.id)
+      continentResource.getByIdContinents(this.id)
       .then((result)=>{
         this.getCont = result.data;
         this.fetchedData = angular.copy(result.data);
@@ -58,7 +59,7 @@ app.controller('ContinentCtrl',['$http','ResourceService', function($http, Resou
   }
 
   this.createContinents = function(){
-    $http.post(mainRoute, this.newConts)
+    continentResource.createContinents(this.newConts)
     .then((result)=>{
       this.continents.push(result.data);
       console.log('Here is fromDB : ' + angular.toJson(this.continents));
@@ -66,8 +67,9 @@ app.controller('ContinentCtrl',['$http','ResourceService', function($http, Resou
       console.log('err : ' + err);
     })
   }
+
   this.editContinents = function(){
-    $http.put(mainRoute +'/'+ this.id, this.getCont)
+    continentResource.editContinents(this.id, this.getCont)
     .then((result)=>{
       this.getCont = result.data;
       this.status = 'Successfully updated : ' + angular.toJson(this.getCont);
@@ -82,7 +84,7 @@ app.controller('ContinentCtrl',['$http','ResourceService', function($http, Resou
     this.removeContFromArr();
     console.log('Filtered array? : ' + angular.toJson(this.allContinents));
     console.log(this.deleting);
-    $http.delete(mainRoute + '/'+ this.id, this.getCont)
+    continentResource.deleteContinent(this.id, this.getCont)
     .then((result)=>{
       this.getCont = result.data;
       this.status = 'Successfully deleted : ' + angular.toJson(this.getCont);

@@ -2,7 +2,7 @@
 const gulp = require('gulp');
 const lint = require('gulp-eslint');
 const mocha = require('gulp-mocha');
-const paths = ['*.js', 'test/*.js', 'app/*.js'];
+const paths = ['*.js', 'test/*.js', 'app/*.js', 'app/**/*.js'];
 const webpack = require('webpack-stream');
 
 const source = {
