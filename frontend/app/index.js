@@ -4,8 +4,8 @@ require('./layout.css');
 
 var app = angular.module('myApp', []);
 
-require('./services/http_service.js')(app)
-
+require('./services/http_service.js')(app);
+require('./js/directives.js')(app);
 
 app.controller('ContinentCtrl',['ResourceService', function(ResourceService){
   var self = this;
