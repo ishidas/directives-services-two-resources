@@ -2,10 +2,37 @@
 const gulp = require('gulp');
 const lint = require('gulp-eslint');
 const mocha = require('gulp-mocha');
-const paths = ['*.js', 'test/*.js', 'app/**/*.js'];
+const paths = ['*.js', 'test/*.js', 'app/*.js'];
 const webpack = require('webpack-stream');
 
-gulp.task('webpack', function(){
+const source = {
+  html: __dirname + '/app/index.html',
+  js: __dirname + '/app/index.js',
+  test: __dirname + '/test/*_spec.js'
+};
+
+gulp.task('copy', ()=>{
+  return gulp.src(source.html)
+    .pipe(gulp.dest('./build'))
+});
+
+gulp.task('bundle:test', ()=>{
+  return gulp.src(source.test)
+    .pipe(webpack({
+      watch: true,
+      output: {
+        filename: 'test_bundle.js'
+      },
+      module: {
+        loaders: [
+          {test:  /\.css$/, loader: 'style!css'},
+        ],
+      },
+    }))
+    .pipe(gulp.dest('./test'));
+});
+
+gulp.task('bundle:dev', function(){
   return gulp.src(__dirname + '/app/index.js')
   .pipe(webpack({
     watch: true,
