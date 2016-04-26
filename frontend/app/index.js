@@ -6,7 +6,8 @@ var app = angular.module('myApp', []);
 
 require('./services/http_service.js')(app)
 
-app.controller('ContinentCtrl',['$http','ResourceService', function($http, ResourceService){
+
+app.controller('ContinentCtrl',['ResourceService', function(ResourceService){
   var self = this;
   var continentResource = ResourceService('continents')
   this.continentsList = [];
@@ -36,7 +37,7 @@ app.controller('ContinentCtrl',['$http','ResourceService', function($http, Resou
   };
 
   this.getContinents = function(){
-    continentResource.getContinents()
+    continentResource.getAll()
     .then((result)=>{
       console.log('Here is result ' + result);
       this.continentsList = result.data;
@@ -48,7 +49,7 @@ app.controller('ContinentCtrl',['$http','ResourceService', function($http, Resou
   }
   this.getByIdContinents = function(){
       this.buttonShow = true;
-      continentResource.getByIdContinents(this.id)
+      continentResource.getById(this.id)
       .then((result)=>{
         this.getCont = result.data;
         this.fetchedData = angular.copy(result.data);
@@ -59,7 +60,7 @@ app.controller('ContinentCtrl',['$http','ResourceService', function($http, Resou
   }
 
   this.createContinents = function(){
-    continentResource.createContinents(this.newConts)
+    continentResource.createOne(this.newConts)
     .then((result)=>{
       this.continents.push(result.data);
       console.log('Here is fromDB : ' + angular.toJson(this.continents));
@@ -69,7 +70,7 @@ app.controller('ContinentCtrl',['$http','ResourceService', function($http, Resou
   }
 
   this.editContinents = function(){
-    continentResource.editContinents(this.id, this.getCont)
+    continentResource.editOne(this.id, this.getCont)
     .then((result)=>{
       this.getCont = result.data;
       this.status = 'Successfully updated : ' + angular.toJson(this.getCont);
@@ -84,7 +85,7 @@ app.controller('ContinentCtrl',['$http','ResourceService', function($http, Resou
     this.removeContFromArr();
     console.log('Filtered array? : ' + angular.toJson(this.allContinents));
     console.log(this.deleting);
-    continentResource.deleteContinent(this.id, this.getCont)
+    continentResource.deleteOne(this.id, this.getCont)
     .then((result)=>{
       this.getCont = result.data;
       this.status = 'Successfully deleted : ' + angular.toJson(this.getCont);
@@ -92,8 +93,9 @@ app.controller('ContinentCtrl',['$http','ResourceService', function($http, Resou
   }
 }]);
 
-app.controller('gemsController',['$http',function($http){
-  var mainRoute = 'http://localhost:3000/gems'
+app.controller('gemsController',['ResourceService',function(ResourceService){
+  var self = this;
+  var gemResource = ResourceService('gems')
   this.gemsList = [];
   this.gems = [];
   this.newGem = {
@@ -121,7 +123,7 @@ app.controller('gemsController',['$http',function($http){
   };
 
   this.getGems = function(){
-    $http.get(mainRoute)
+    gemResource.getAll()
     .then((result)=>{
       this.gemsList = result.data;
       this.allGems = angular.copy(result.data);
@@ -132,7 +134,7 @@ app.controller('gemsController',['$http',function($http){
   }
 
   this.getGemById = function(){
-      $http.get(mainRoute + '/' + this.id)
+      gemResource.getById(this.id)
       .then((result)=>{
         this.buttonShow = true;
         this.getGem = result.data;
@@ -143,7 +145,7 @@ app.controller('gemsController',['$http',function($http){
   }
 
   this.createGems = function(){
-    $http.post(mainRoute, this.newGem)
+    gemResource.createOne(this.newGem)
     .then((result)=>{
       this.gems.push(result.data);
       console.log('Here is new Gem! : ' + this.gems);
@@ -153,7 +155,7 @@ app.controller('gemsController',['$http',function($http){
   }
 
   this.editGem = function(){
-    $http.put(mainRoute + '/' + this.id, this.getGem)
+    gemResource.editOne(this.id, this.getGem)
     .then((result)=>{
       this.getGem = result.data;
       this.status = 'Successfully updated : ' + angular.toJson(this.getGem);
@@ -167,7 +169,7 @@ app.controller('gemsController',['$http',function($http){
     this.removeGemFromArr();
     console.log('Filtered array? : ' + angular.toJson(this.allGems));
     console.log(this.deleting);
-    $http.delete(mainRoute + '/' + this.id, this.getGem)
+    gemResource.deleteOne(this.id, this.getGem)
     .then((result)=>{
       this.getGem = result.data;
       this.status = 'Successfully deleted : ' + angular.toJson(this.getGem);
